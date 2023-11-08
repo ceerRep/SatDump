@@ -21,7 +21,7 @@ enum
     BACKWARD = 0xCC
 };
 
-static inline int syncs[] = {ZERO, FORWARD, BACKWARD};
+static int syncs[] = {ZERO, FORWARD, BACKWARD};
 
 enum error_codes
 {
@@ -83,7 +83,7 @@ plugin_error_t plugin_acquire(plugin_acquire_info_t acquire_info, plugin_acquire
     pdata->time_gap = std::stoll(acquire_info.query_plugin_param(acquire_info.plugin_interface_data, "time_gap"));
 
     pdata->counter = (volatile long long *)acquire_info.acquire_space_by_name(pdata->acquire_info.plugin_interface_data,
-                                                                              "concat_c_plugin_counter", 0);
+                                                                              "fengyun2_pn_sync_symbol_counter", 0);
 
     if (pdata->counter)
     {
@@ -171,8 +171,8 @@ int plugin_process_data(plugin_acquire_result_t *acquire_result, const unsigned 
             // printf("%ld\n", pdata->symbols_elapsed);
             if (offset > 0)
             {
-                pdata->acquire_info.print_log(pdata->acquire_info.plugin_interface_data, INFO,
-                                              ("Counter added " + std::to_string(offset)).c_str());
+                // pdata->acquire_info.print_log(pdata->acquire_info.plugin_interface_data, INFO,
+                //                               ("Counter added " + std::to_string(offset)).c_str());
                 pdata->forward_counter += offset;
             }
         }
@@ -181,8 +181,8 @@ int plugin_process_data(plugin_acquire_result_t *acquire_result, const unsigned 
             int offset = pdata->milliseconds_elapsed / (double)pdata->time_gap - 1;
             if (offset > 0)
             {
-                pdata->acquire_info.print_log(pdata->acquire_info.plugin_interface_data, INFO,
-                                              ("Counter added " + std::to_string(offset)).c_str());
+                // pdata->acquire_info.print_log(pdata->acquire_info.plugin_interface_data, INFO,
+                //                               ("Counter added " + std::to_string(offset)).c_str());
                 pdata->forward_counter += offset;
             }
         }
@@ -237,7 +237,7 @@ int plugin_process_data(plugin_acquire_result_t *acquire_result, const unsigned 
 void plugin_dispose(plugin_acquire_result_t *acquire_result)
 {
     PluginData *pdata = (PluginData *)(acquire_result->plugin_custom_data);
-    pdata->acquire_info.dispose_space_by_name(pdata->acquire_info.plugin_interface_data, "concat_c_plugin_counter");
+    pdata->acquire_info.dispose_space_by_name(pdata->acquire_info.plugin_interface_data, "fengyun2_pn_sync_symbol_counter");
     delete pdata;
 }
 
